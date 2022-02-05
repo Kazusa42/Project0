@@ -15,14 +15,9 @@ from utils.utils_bbox import DecodeBox
 
 class FRCNN(object):
     _defaults = {
-        #--------------------------------------------------------------------------#
-        #   使用自己训练好的模型进行预测一定要修改model_path和classes_path！
-        #   model_path指向logs文件夹下的权值文件，classes_path指向model_data下的txt
-        #
-        #   训练好后logs文件夹下存在多个权值文件，选择验证集损失较低的即可。
-        #   验证集损失较低不代表mAP较高，仅代表该权值在验证集上泛化性能较好。
-        #   如果出现shape不匹配，同时要注意训练时的model_path和classes_path参数的修改
-        #--------------------------------------------------------------------------#
+        """
+        NOTICE: if ues your own dataset, please modifiy "model_path" and "classes_path"
+        """
         "model_path": 'model_data/voc_weights_resnet.pth',
         "classes_path": 'model_data/voc_classes.txt',
 
@@ -32,7 +27,7 @@ class FRCNN(object):
         # iou threshold
         "nms_iou": 0.3,
         'anchors_size': [8, 16, 32],
-        "cuda": True,
+        "cuda": False,
     }
 
     @classmethod
@@ -81,12 +76,7 @@ class FRCNN(object):
             images = torch.from_numpy(image_data)
             if self.cuda:
                 images = images.cuda()
-            
-            #-------------------------------------------------------------#
-            #   roi_cls_locs  建议框的调整参数
-            #   roi_scores    建议框的种类得分
-            #   rois          建议框的坐标
-            #-------------------------------------------------------------#
+
             roi_cls_locs, roi_scores, rois, _ = self.net(images)
             results = self.bbox_util.forward(roi_cls_locs, roi_scores, rois, image_shape, input_shape, 
                                              nms_iou=self.nms_iou, confidence=self.confidence)
@@ -94,20 +84,15 @@ class FRCNN(object):
             if len(results[0]) <= 0:
                 return image
                 
-            top_label = np.array(results[0][:, 5], dtype = 'int32')
+            top_label = np.array(results[0][:, 5], dtype='int32')
             top_conf = results[0][:, 4]
             top_boxes = results[0][:, :4]
-        
-        #---------------------------------------------------------#
-        #   设置字体与边框厚度
-        #---------------------------------------------------------#
+
         font = ImageFont.truetype(font='model_data/simhei.ttf',
                                   size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
         thickness = int(max((image.size[0] + image.size[1]) // np.mean(input_shape), 1))
-        
-        #---------------------------------------------------------#
-        #   图像绘制
-        #---------------------------------------------------------#
+
+        # draw
         for i, c in list(enumerate(top_label)):
             predicted_class = self.class_names[int(c)]
             box = top_boxes[i]
@@ -134,7 +119,7 @@ class FRCNN(object):
             for i in range(thickness):
                 draw.rectangle([left + i, top + i, right - i, bottom - i], outline=self.colors[c])
             draw.rectangle([tuple(text_origin), tuple(text_origin + label_size)], fill=self.colors[c])
-            draw.text(text_origin, str(label,'UTF-8'), fill=(0, 0, 0), font=font)
+            draw.text(text_origin, str(label, 'UTF-8'), fill=(0, 0, 0), font=font)
             del draw
 
         return image
@@ -154,7 +139,7 @@ class FRCNN(object):
 
             roi_cls_locs, roi_scores, rois, _ = self.net(images)
             results = self.bbox_util.forward(roi_cls_locs, roi_scores, rois, image_shape, input_shape, 
-                                             nms_iou = self.nms_iou, confidence=self.confidence)
+                                             nms_iou=self.nms_iou, confidence=self.confidence)
         t1 = time.time()
         for _ in range(test_interval):
             with torch.no_grad():
@@ -183,7 +168,7 @@ class FRCNN(object):
 
             roi_cls_locs, roi_scores, rois, _ = self.net(images)
             results = self.bbox_util.forward(roi_cls_locs, roi_scores, rois, image_shape, input_shape, 
-                                             nms_iou = self.nms_iou, confidence=self.confidence)
+                                             nms_iou=self.nms_iou, confidence=self.confidence)
             if len(results[0]) <= 0:
                 return 
 
