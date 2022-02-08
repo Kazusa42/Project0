@@ -74,6 +74,16 @@ class AnchorTargetCreator(object):
         """
         positive sample: 1
         negative sample: 0
+
+        Rules:
+        1. two kinds of anchors has positive labels:
+           (1) the anchor/anchors with the highest iou overlap with a ground-trut
+           (2) an anchor that has an IoU overlap higher than 0.7 with any ground-truth box
+
+        2. a negative label will be assigned to a non-positive anchor if its iou ratio
+           is lower than 0.3 for all ground-truth boxes.
+
+        3. some anchors may not be assigned.  They are not contribute to the loss (assigned as -1)
         """
         label = np.empty((len(anchor),), dtype=np.int32)
         label.fill(-1)
@@ -149,6 +159,11 @@ class ProposalTargetCreator(object):
         return sample_roi, gt_roi_loc, gt_roi_label
 
 
+"""
+Including the loss function of Faster RCNN
+"""
+
+
 class FasterRCNNTrainer(nn.Module):
     def __init__(self, faster_rcnn, optimizer):
         super(FasterRCNNTrainer, self).__init__()
@@ -168,8 +183,8 @@ class FasterRCNNTrainer(nn.Module):
         gt_loc = gt_loc[gt_label > 0]
 
         sigma_squared = sigma ** 2
-        regression_diff = (gt_loc - pred_loc)
-        regression_diff = regression_diff.abs()
+        regression_diff = np.abs((gt_loc - pred_loc))
+        # regression_diff = regression_diff.abs()
         regression_loss = torch.where(
             regression_diff < (1. / sigma_squared),
             0.5 * sigma_squared * regression_diff ** 2,
@@ -207,7 +222,7 @@ class FasterRCNNTrainer(nn.Module):
                 gt_rpn_loc = gt_rpn_loc.cuda()
                 gt_rpn_label = gt_rpn_label.cuda()
 
-            # rpn loss
+            # rpn loss: localization loss and classification loss
             rpn_loc_loss = self._fast_rcnn_loc_loss(rpn_loc, gt_rpn_loc, gt_rpn_label, self.rpn_sigma)
             rpn_cls_loss = F.cross_entropy(rpn_score, gt_rpn_label, ignore_index=-1)
 
