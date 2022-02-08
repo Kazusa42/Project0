@@ -57,6 +57,16 @@ class ProposalCreator:
         return roi
 
 
+"""
+Implementation of RPN
+
+The idea of RPN is actually sliding window across the shared feature map extracted by backbone.
+However, it's implementation is usually achieved by conv-layer
+
+For each sliding window, it will predict k region proposals.
+"""
+
+
 class RegionProposalNetwork(nn.Module):
     def __init__(self, in_channels=512, mid_channels=512, ratios=[0.5, 1, 2], anchor_scales=[8, 16, 32],
                  feat_stride=16, mode="training"):
@@ -68,6 +78,9 @@ class RegionProposalNetwork(nn.Module):
         self.anchor_base = generate_anchor_base(anchor_scales=anchor_scales, ratios=ratios)
         n_anchor = self.anchor_base.shape[0]
 
+        """
+        RPN is implemented with an n×n convolutional layer followed by two sibling 1 × 1 convolutional layers
+        """
         self.conv1 = nn.Conv2d(in_channels, mid_channels, 3, 1, 1)
         self.score = nn.Conv2d(mid_channels, n_anchor * 2, 1, 1, 0)
         self.loc = nn.Conv2d(mid_channels, n_anchor * 4, 1, 1, 0)
@@ -76,7 +89,7 @@ class RegionProposalNetwork(nn.Module):
         # decode suggest bbox and apply nms
         self.proposal_layer = ProposalCreator(mode)
 
-        # init FPN
+        # init RPN
         normal_init(self.conv1, 0, 0.01)
         normal_init(self.score, 0, 0.01)
         normal_init(self.loc, 0, 0.01)
