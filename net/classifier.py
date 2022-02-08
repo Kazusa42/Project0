@@ -41,3 +41,4 @@ class Resnet50RoIHead(nn.Module):
         roi_cls_locs = roi_cls_locs.view(n, -1, roi_cls_locs.size(1))
         roi_scores = roi_scores.view(n, -1, roi_scores.size(1))
         return roi_cls_locs, roi_scores
+    
