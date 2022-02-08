@@ -8,6 +8,16 @@ from utils.utils import normal_init
 
 warnings.filterwarnings("ignore")
 
+"""
+ROI max pooling
+
+1. RoI max pooling works by dividing the h × w RoI window into an H × W grid of sub-windows 
+   of approximate size h/H × w/W and then max-pooling the values in each sub-window into the 
+   corresponding output grid cell. 
+
+2. Pooling is applied independently to each feature map channel, as in standard max pooling.
+"""
+
 
 class Resnet50RoIHead(nn.Module):
     def __init__(self, n_class, roi_size, spatial_scale, classifier):
@@ -41,4 +51,3 @@ class Resnet50RoIHead(nn.Module):
         roi_cls_locs = roi_cls_locs.view(n, -1, roi_cls_locs.size(1))
         roi_scores = roi_scores.view(n, -1, roi_scores.size(1))
         return roi_cls_locs, roi_scores
-    
