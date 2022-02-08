@@ -15,17 +15,13 @@ from utils.utils_bbox import DecodeBox
 
 class FRCNN(object):
     _defaults = {
-        """
-        NOTICE: if ues your own dataset, please modifiy "model_path" and "classes_path"
-        """
+        # NOTICE: if ues your own dataset, please modifiy "model_path" and "classes_path"
+
         "model_path": 'model_data/voc_weights_resnet.pth',
         "classes_path": 'model_data/voc_classes.txt',
-
         "backbone": "resnet50",
-        # confidence score threshold
-        "confidence": 0.5,
-        # iou threshold
-        "nms_iou": 0.3,
+        "confidence": 0.5,  # confidence score threshold
+        "nms_iou": 0.3,  # iou threshold
         'anchors_size': [8, 16, 32],
         "cuda": False,
     }
