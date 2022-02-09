@@ -16,7 +16,7 @@ Codes for Thesis
 ## Training
 __This code use the same format as VOC dataset to train.__
 1. Prepare your dataset.  
-   Put the images under dir "./VOCdevkit/VOC2007/JPEGImages"
+   Put the images under dir "./VOCdevkit/VOC2007/JPEGImages"  
    Put labels under dir "./VOCdevkit/VOC2007/Annotation"
 2. Creat a your_classes.txt file for your dataset and put it under dir "./model_data".
 3. Change "classes_path" param in voc_annotation.py, let it corresponse to "./model_data/your_classes.txt"
@@ -29,7 +29,6 @@ __This code use the same format as VOC dataset to train.__
 1. Put weight file (.pth) under dir "./model_data". Then run predict.py and input the image path.
 ### 2. use your own weight
 1. First follow the train part (#Training) to get your own weight.
-2. Then change the "_defaults_" param in "frcnn.py".  
-   _In particulary, "model_path" and "classes_path" these 2 attributes should corresponse to your dataset._
+2. Then change _"model_path" and "classes_path"_ these 2 attributes of "_defaults_" param in "frcnn.py", let them corresponce to your dataset.
 3. Then run predict.py and input the image path.
 4. _Other settings about predict is wirtten in predict.py._
