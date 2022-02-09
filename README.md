@@ -29,7 +29,7 @@ __This code use the same format as VOC dataset to train.__
 ### 1. use pretrained weight
 1. Put weight file (.pth) under dir "./model_data". Then run predict.py and input the image path.
 ### 2. use your own weight
-1. First follow the train part (#Training) to get your own weight.
+1. First follow the train part [Training](#Training) to get your own weight.
 2. Then change _"model_path" and "classes_path"_ these 2 attributes of "_defaults_" param in "frcnn.py", let them corresponce to your dataset.
 3. Then run predict.py and input the image path.
 4. _Other settings about predict is wirtten in predict.py._
