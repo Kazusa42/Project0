@@ -183,8 +183,8 @@ class FasterRCNNTrainer(nn.Module):
         gt_loc = gt_loc[gt_label > 0]
 
         sigma_squared = sigma ** 2
-        regression_diff = np.abs((gt_loc - pred_loc))
-        # regression_diff = regression_diff.abs()
+        regression_diff = (gt_loc - pred_loc)
+        regression_diff = regression_diff.abs()
         regression_loss = torch.where(
             regression_diff < (1. / sigma_squared),
             0.5 * sigma_squared * regression_diff ** 2,
