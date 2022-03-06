@@ -1,8 +1,8 @@
 import torch.nn as nn
 
-from nets.classifier import Resnet50RoIHead
-from nets.resnet50 import resnet50
-from nets.rpn import RegionProposalNetwork
+from net.classifier import Resnet50RoIHead
+from net.resnet50 import resnet50
+from net.rpn import RegionProposalNetwork
 
 
 class FasterRCNN(nn.Module):
