@@ -23,7 +23,7 @@ class FRCNN(object):
         "confidence": 0.5,  # confidence score threshold
         "nms_iou": 0.3,  # iou threshold
         'anchors_size': [8, 16, 32],
-        "cuda": False,
+        "cuda": True,
     }
 
     @classmethod
