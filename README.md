@@ -7,6 +7,9 @@ Codes for Thesis
 2. predict.py had been tested, as well as train.py.
 3. Creat the first version of README.
 
+### Ver 0.2  update on 2022/03/09
+1. get_map.py has been tested and get 73.87% mAP on VOC dataset.
+2. simplify some code
 
 ## Code structure
 1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
