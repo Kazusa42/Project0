@@ -78,7 +78,7 @@ if __name__ == "__main__":
     """
     Init_Epoch = 0
     Freeze_Epoch, UnFreeze_Epoch = 50, 100
-    Freeze_batch_size, Unfreeze_batch_size = 4, 2
+    Freeze_batch_size, Unfreeze_batch_size = 8, 4  # RTX 3080ti
     Freeze_lr, Unfreeze_lr = 1e-4, 1e-5
 
     # use stage freeze or not
