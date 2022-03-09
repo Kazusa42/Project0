@@ -8,7 +8,7 @@ Codes for Thesis
 3. Creat the first version of README.
 
 ### Ver 0.2  update on 2022/03/09
-1. get_map.py has been tested and get 73.87% mAP on VOC dataset.
+1. get_map.py has been tested and get 73.87% mAP on VOC, 8.13% mAP on VisDrone.
 2. simplify some code
 
 ## Code structure
