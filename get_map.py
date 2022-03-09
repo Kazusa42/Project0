@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     if map_mode == 0 or map_mode == 1:
         print("Load model.")
-        frcnn = FRCNN(confidence = 0.01, nms_iou = 0.5)
+        frcnn = FRCNN(confidence=0.01, nms_iou=0.5)
         print("Load model done.")
 
         print("Get predict result.")
