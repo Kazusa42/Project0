@@ -10,6 +10,7 @@ from utils.callbacks import LossHistory
 from utils.dataloader import FRCNNDataset, frcnn_dataset_collate
 from utils.utils import get_classes
 from utils.utils_fit import fit_one_epoch
+from configure import *
 
 '''
 训练自己的目标检测模型一定需要注意以下几点：
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     Cuda = True
 
     # if use your own dataset to train, please change this path.
-    classes_path = r'model_data/voc_classes.txt'
+    classes_path = CLASSES_PATH
 
     """
     model_path: load pre-train model.
@@ -48,7 +49,7 @@ if __name__ == "__main__":
        
     2. normally, we do not train a network from very begining
     """
-    model_path = r'model_data/voc_weights_resnet.pth'
+    model_path = MODEL_PATH
 
     input_shape = [600, 600]
     backbone = r"resnet50"
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     if want to detecte small objects, use small value for the font-number in anchors_size
     e.g. anchors_size = [4, 16, 32]
     """
-    anchors_size = [8, 16, 32]
+    anchors_size = ANCHOR_SIZE
 
     """
     train schedule; Default has 2 stages: frezze and unfrezze
@@ -85,10 +86,10 @@ if __name__ == "__main__":
     freeze_train = True
     
     # thread number
-    num_workers = 4
+    num_workers = 8
 
-    train_annotation_path = '2007_train.txt'
-    val_annotation_path = '2007_val.txt'
+    train_annotation_path = 'train.txt'
+    val_annotation_path = 'val.txt'
 
     class_names, num_classes = get_classes(classes_path)
     
@@ -121,7 +122,7 @@ if __name__ == "__main__":
 
     """ stage freeze """
     if freeze_train:
-        print('Start freeze training.')
+        print('\nStart freeze training.')
         start_epoch = init_epoch
         end_epoch = freeze_epoch
                         
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     
     """ stage unfrezze"""
     if True:
-        print('Start Un-freeze training.')
+        print('\nStart Un-freeze training.')
         start_epoch = freeze_epoch
         end_epoch = unfreeze_epoch
                         

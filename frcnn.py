@@ -11,19 +11,20 @@ from net.frcnn import FasterRCNN
 from utils.utils import (cvtColor, get_classes, get_new_img_size, resize_image,
                          preprocess_input)
 from utils.utils_bbox import DecodeBox
+from configure import *
 
 
 class FRCNN(object):
     _defaults = {
         # NOTICE: if ues your own dataset, please modifiy "model_path" and "classes_path"
 
-        "model_path": 'model_data/voc_weights_resnet.pth',
-        "classes_path": 'model_data/voc_classes.txt',
+        "model_path": MODEL_PATH,
+        "classes_path": CLASSES_PATH,
         "backbone": "resnet50",
         "confidence": 0.5,  # confidence score threshold
         "nms_iou": 0.3,  # iou threshold
-        'anchors_size': [8, 16, 32],
-        "cuda": True,
+        'anchors_size': ANCHOR_SIZE,
+        "cuda": IF_CUDA,
     }
 
     @classmethod
@@ -84,8 +85,7 @@ class FRCNN(object):
             top_conf = results[0][:, 4]
             top_boxes = results[0][:, :4]
 
-        font = ImageFont.truetype(font='model_data/simhei.ttf',
-                                  size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+        font = ImageFont.truetype(font=FONT_TYPE, size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
         thickness = int(max((image.size[0] + image.size[1]) // np.mean(input_shape), 1))
 
         # draw
