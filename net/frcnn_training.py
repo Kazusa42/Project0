@@ -5,15 +5,35 @@ from torch.nn import functional as F
 
 
 def bbox_iou(bbox_a, bbox_b):
+    # bbox[1]: x1, y1, x2, y2
     if bbox_a.shape[1] != 4 or bbox_b.shape[1] != 4:
         print(bbox_a, bbox_b)
         raise IndexError
-    tl = np.maximum(bbox_a[:, None, :2], bbox_b[:, :2])
-    br = np.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])
+    tl = np.maximum(bbox_a[:, None, :2], bbox_b[:, :2])  # top-left
+    br = np.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])  # bottom-right
     area_i = np.prod(br - tl, axis=2) * (tl < br).all(axis=2)
     area_a = np.prod(bbox_a[:, 2:] - bbox_a[:, :2], axis=1)
     area_b = np.prod(bbox_b[:, 2:] - bbox_b[:, :2], axis=1)
     return area_i / (area_a[:, None] + area_b - area_i)
+
+
+def bbox_diou(bbox_a, bbox_b):
+    # bbox[1]: x1, y1, x2, y2
+    if bbox_a.shape[1] != 4 or bbox_b.shape[1] != 4:
+        print(bbox_a, bbox_b)
+        raise IndexError
+
+    center1_x = 0.5 * (bbox_a[:, None, 0] + bbox_a[:, None, 2])
+    center1_y = 0.5 * (bbox_a[:, None, 1] + bbox_a[:, None, 3])
+    center2_x = 0.5 * (bbox_b[:, 0] + bbox_b[:, 2])
+    center2_y = 0.5 * (bbox_b[:, 1] + bbox_b[:, 3])
+    center_dis = (center1_x - center2_x) ** 2 + (center1_y - center2_y) ** 2
+
+    tl = np.maximum(bbox_a[:, None, :2], bbox_b[:, :2])  # top-left
+    br = np.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])  # bottom-right
+    cross_dis = np.sum((tl - br) ** 2)
+
+    return bbox_iou(bbox_a, bbox_b) - center_dis / cross_dis
 
 
 def bbox2loc(src_bbox, dst_bbox):
@@ -56,7 +76,7 @@ class AnchorTargetCreator(object):
             return np.zeros_like(anchor), label
 
     def _calc_ious(self, anchor, bbox):
-        ious = bbox_iou(anchor, bbox)
+        ious = bbox_diou(anchor, bbox)
 
         if len(bbox) == 0:
             return np.zeros(len(anchor), np.int32), np.zeros(len(anchor)), np.zeros(len(bbox))
@@ -123,7 +143,7 @@ class ProposalTargetCreator(object):
 
     def __call__(self, roi, bbox, label, loc_normalize_std=(0.1, 0.1, 0.2, 0.2)):
         roi = np.concatenate((roi.detach().cpu().numpy(), bbox), axis=0)
-        iou = bbox_iou(roi, bbox)
+        iou = bbox_diou(roi, bbox)
 
         if len(bbox) == 0:
             gt_assignment = np.zeros(len(roi), np.int32)
