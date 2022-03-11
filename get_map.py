@@ -7,6 +7,7 @@ from tqdm import tqdm
 from frcnn import FRCNN
 from utils.utils import get_classes
 from utils.utils_map import get_coco_map, get_map
+from configure import *
 
 if __name__ == "__main__":
     """
@@ -28,13 +29,13 @@ if __name__ == "__main__":
     VOCdevkit_path:
     map_out_path: mAP output file path 
     """
-    classes_path = 'model_data/voc_classes.txt'
+    classes_path = CLASSES_PATH
     MINOVERLAP = 0.5
     map_vis = False
-    VOCdevkit_path = 'VOCdevkit'
+    dataset_path = 'VOCdevkit'
     map_out_path = 'map_out'
 
-    image_ids = open(os.path.join(VOCdevkit_path, "VOC2007/ImageSets/Main/test.txt")).read().strip().split()
+    image_ids = open(os.path.join(dataset_path, "ImageSets/Main/test.txt")).read().strip().split()
 
     if not os.path.exists(map_out_path):
         os.makedirs(map_out_path)
@@ -54,7 +55,7 @@ if __name__ == "__main__":
 
         print("Get predict result.")
         for image_id in tqdm(image_ids):
-            image_path = os.path.join(VOCdevkit_path, "VOC2007/JPEGImages/"+image_id+".jpg")
+            image_path = os.path.join(dataset_path, "JPEGImages/" + image_id + ".jpg")
             image = Image.open(image_path)
             if map_vis:
                 image.save(os.path.join(map_out_path, "images-optional/" + image_id + ".jpg"))
@@ -65,7 +66,7 @@ if __name__ == "__main__":
         print("Get ground truth result.")
         for image_id in tqdm(image_ids):
             with open(os.path.join(map_out_path, "ground-truth/"+image_id+".txt"), "w") as new_f:
-                root = ET.parse(os.path.join(VOCdevkit_path, "VOC2007/Annotations/"+image_id+".xml")).getroot()
+                root = ET.parse(os.path.join(dataset_path, "Annotations/" + image_id + ".xml")).getroot()
                 for obj in root.findall('object'):
                     difficult_flag = False
                     if obj.find('difficult') is not None:
