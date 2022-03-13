@@ -61,7 +61,8 @@ def fit_one_epoch(model, train_util, loss_history, optimizer, epoch, epoch_step,
 
     print('Finish Validation')
     loss_history.append_loss(total_loss / epoch_step, val_loss / epoch_step_val)
-    print('Epoch:' + str(epoch+1) + '/' + str(Epoch))
+    print('Epoch:' + str(epoch + 1) + '/' + str(Epoch))
     print('Total Loss: %.3f || Val Loss: %.3f ' % (total_loss / epoch_step, val_loss / epoch_step_val))
-    torch.save(model.state_dict(), 'logs/ep%03d-loss%.3f-val_loss%.3f.pth' %
-               (epoch + 1, total_loss / epoch_step, val_loss / epoch_step_val))
+    if (epoch + 1) % 10 == 0:
+        torch.save(model.state_dict(), 'logs/ep%03d-loss%.3f-val_loss%.3f.pth' %
+                   (epoch + 1, total_loss / epoch_step, val_loss / epoch_step_val))
