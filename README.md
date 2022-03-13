@@ -15,6 +15,7 @@ Codes for Thesis
 ### Ver 1.0 update on 2022/03/13
 1. Add D-IOU (https://zhuanlan.zhihu.com/p/94799295) function to replace normal IOU, and train with D-IOU.
 2. Get 13.83% mAP on VisDrone.
+3. Change weights file saving strategy. (saving for each epoch -> saving for every 10 epoch)
 
 ## Code structure
 1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
