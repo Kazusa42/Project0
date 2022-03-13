@@ -6,6 +6,7 @@ from torch.nn import functional as F
 
 def bbox_iou(bbox_a, bbox_b):
     # bbox[1]: x1, y1, x2, y2
+    # print(bbox_a.shape)
     if bbox_a.shape[1] != 4 or bbox_b.shape[1] != 4:
         print(bbox_a, bbox_b)
         raise IndexError
@@ -14,6 +15,7 @@ def bbox_iou(bbox_a, bbox_b):
     area_i = np.prod(br - tl, axis=2) * (tl < br).all(axis=2)
     area_a = np.prod(bbox_a[:, 2:] - bbox_a[:, :2], axis=1)
     area_b = np.prod(bbox_b[:, 2:] - bbox_b[:, :2], axis=1)
+    # print(area_i.shape)
     return area_i / (area_a[:, None] + area_b - area_i)
 
 
@@ -31,9 +33,11 @@ def bbox_diou(bbox_a, bbox_b):
 
     tl = np.maximum(bbox_a[:, None, :2], bbox_b[:, :2])  # top-left
     br = np.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])  # bottom-right
-    cross_dis = np.sum((tl - br) ** 2)
+    cross_dis = np.sum((tl - br) ** 2, axis=2)
 
-    return bbox_iou(bbox_a, bbox_b) - center_dis / cross_dis
+    rate = center_dis / cross_dis
+
+    return bbox_iou(bbox_a, bbox_b) - rate
 
 
 def bbox2loc(src_bbox, dst_bbox):
