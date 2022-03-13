@@ -12,6 +12,10 @@ Codes for Thesis
 2. Simplify some code
 3. Add a configure.py to control some global params. However, please notice this script is not in full-charge.
 
+### Ver 1.0 update on 2022/03/13
+1. Add D-IOU (https://zhuanlan.zhihu.com/p/94799295) function to replace normal IOU, and train with D-IOU.
+2. Get 13.83% mAP on VisDrone.
+
 ## Code structure
 1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
 2. folder "utils" including some support block.
