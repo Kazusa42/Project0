@@ -16,6 +16,7 @@ Codes for Thesis
 1. Add D-IOU (https://zhuanlan.zhihu.com/p/94799295) function to replace normal IOU, and train with D-IOU.
 2. Get 13.83% mAP on VisDrone.
 3. Change weights file saving strategy. (saving for each epoch -> saving for every 10 epoch)
+4. Re-write some part of README.
 
 ## Code structure
 1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
@@ -24,14 +25,14 @@ Codes for Thesis
 
 
 ## Training
-__This code use the same format as VOC dataset to train.__
+__This code use the same annotation format as VOC dataset to train.__
 1. Prepare your dataset.  
-   Put the images under dir "./VOCdevkit/VOC2007/JPEGImages"  
-   Put labels under dir "./VOCdevkit/VOC2007/Annotation"
+   Put the images under dir "./your_dataset_name/JPEGImages"  
+   Put labels under dir "./your_dataset_name/Annotation"
 2. Creat a your_classes.txt file for your dataset and put it under dir "./model_data".
-3. Change "classes_path" param in voc_annotation.py, let it corresponse to "./model_data/your_classes.txt"
-4. Run voc_annotation.py
-5. Change "classes_path" parma in train.py and run train.py.
+3. Change "classes_path" param in annotation.py, let it corresponse to "./model_data/your_classes.txt"
+4. Run annotation.py
+5. Change "classes_path" etc. parmas in configure.py and run train.py.
 6. _More details about training is written in train.py_
 
 ## Detection
@@ -42,3 +43,9 @@ __This code use the same format as VOC dataset to train.__
 2. Then change _"model_path" and "classes_path"_ these 2 attributes of "_defaults_" param in "frcnn.py", let them corresponce to your dataset.
 3. Then run predict.py and input the image path.
 4. _Other settings about predict is wirtten in predict.py._
+
+## Evaluate
+1. Set your modle (weights file) and classes in configure.py.  
+2. Make sure you have already got "test.txt" under dir "./your_dataset_name/ImageSets".  
+3. To asure 2, set params in configure.py and run annotation.py.  
+4. Run get_map.py.  
