@@ -18,6 +18,9 @@ Codes for Thesis
 3. Change weights file saving strategy. (saving for each epoch -> saving for every 10 epoch)
 4. Re-write some part of README.
 
+### Ver 1.1 update on 2022/03/20
+1. Use DOTA dataset to train. 
+
 ## Code structure
 1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
 2. folder "utils" including some support block.
