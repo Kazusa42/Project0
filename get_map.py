@@ -16,8 +16,6 @@ if __name__ == "__main__":
     1: only get predict result
     2: only get ground truth
     3: only calculate VOC mAP
-    4: use COCO tool box to calculate mAP from 0.50:0.95(iou),
-       need get predict result, ground truth and install pycocotools first.
     """
     map_mode = 0
 
@@ -93,7 +91,3 @@ if __name__ == "__main__":
         get_map(MINOVERLAP, True, path=map_out_path)
         print("Get map done.")
 
-    if map_mode == 4:
-        print("Get map.")
-        get_coco_map(class_names=class_names, path=map_out_path)
-        print("Get map done.")
