@@ -40,13 +40,13 @@ class DecodeBox:
     def frcnn_correct_boxes(self, box_xy, box_wh, input_shape, image_shape):
         box_yx = box_xy[..., ::-1]
         box_hw = box_wh[..., ::-1]
-        # input_shape = np.array(input_shape)
+        input_shape = np.array(input_shape)
         image_shape = np.array(image_shape)
 
         box_mins = box_yx - (box_hw / 2.)
         box_maxes = box_yx + (box_hw / 2.)
-        boxes = np.concatenate([box_mins[..., 0:1], box_mins[..., 1:2],
-                                box_maxes[..., 0:1], box_maxes[..., 1:2]], axis=-1)
+        boxes = np.concatenate([box_mins[..., 0:1], box_mins[..., 1:2], box_maxes[..., 0:1], box_maxes[..., 1:2]],
+                               axis=-1)
         boxes *= np.concatenate([image_shape, image_shape], axis=-1)
         return boxes
 
@@ -54,8 +54,6 @@ class DecodeBox:
         results = []
         bs = len(roi_cls_locs)
         rois = rois.view((bs, -1, 4))
-
-        # deal with one image
         for i in range(bs):
             roi_cls_loc = roi_cls_locs[i] * self.std
             roi_cls_loc = roi_cls_loc.view([-1, self.num_classes, 4])
@@ -64,7 +62,6 @@ class DecodeBox:
             cls_bbox = loc2bbox(roi.contiguous().view((-1, 4)), roi_cls_loc.contiguous().view((-1, 4)))
             cls_bbox = cls_bbox.view([-1, self.num_classes, 4])
 
-            # normalization
             cls_bbox[..., [0, 2]] = (cls_bbox[..., [0, 2]]) / input_shape[1]
             cls_bbox[..., [1, 3]] = (cls_bbox[..., [1, 3]]) / input_shape[0]
 
@@ -80,19 +77,22 @@ class DecodeBox:
                     boxes_to_process = cls_bbox[c_confs_m, c]
                     confs_to_process = c_confs[c_confs_m]
 
-                    keep = nms(boxes_to_process, confs_to_process, nms_iou)
+                    keep = nms(
+                        boxes_to_process,
+                        confs_to_process,
+                        nms_iou
+                    )
                     good_boxes = boxes_to_process[keep]
                     confs = confs_to_process[keep][:, None]
-                    labels = (c - 1) * torch.ones((len(keep), 1)).cuda() \
-                        if confs.is_cuda else (c - 1) * torch.ones((len(keep), 1))
+                    labels = (c - 1) * torch.ones((len(keep), 1)).cuda() if confs.is_cuda else (c - 1) * torch.ones(
+                        (len(keep), 1))
 
                     c_pred = torch.cat((good_boxes, confs, labels), dim=1).cpu().numpy()
-                    # append into result
                     results[-1].extend(c_pred)
 
             if len(results[-1]) > 0:
                 results[-1] = np.array(results[-1])
-                box_xy, box_wh = (results[-1][:, 0:2] + results[-1][:, 2:4])/2,\
+                box_xy, box_wh = (results[-1][:, 0:2] + results[-1][:, 2:4]) / 2,\
                     results[-1][:, 2:4] - results[-1][:, 0:2]
                 results[-1][:, :4] = self.frcnn_correct_boxes(box_xy, box_wh, input_shape, image_shape)
 

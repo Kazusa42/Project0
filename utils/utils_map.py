@@ -164,8 +164,8 @@ def draw_text_in_image(img, text, pos, color, line_width):
     fontScale = 1
     lineType = 1
     bottomLeftCornerOfText = pos
-    cv2.putText(img, text, bottomLeftCornerOfText,
-                font, fontScale, color, lineType)
+    cv2.putText(img, text, bottomLeftCornerOfText, font, fontScale,
+                color, lineType)
     text_width, _ = cv2.getTextSize(text, font, fontScale, lineType)[0]
     return img, (line_width + text_width)
 
@@ -193,13 +193,13 @@ def adjust_axes(r, t, fig, axes):
 """
 
 
-def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, output_path, to_show, plot_color,
-                   true_p_bar):
+def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label,
+                   output_path, to_show, plot_color, true_p_bar):
     # sort the dictionary by decreasing value, into a list of tuples
     sorted_dic_by_value = sorted(dictionary.items(), key=operator.itemgetter(1))
     # unpacking the list of tuples into two lists
     sorted_keys, sorted_values = zip(*sorted_dic_by_value)
-    # 
+    #
     if true_p_bar != "":
         """
          Special case to draw in:
@@ -213,8 +213,8 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
             fp_sorted.append(dictionary[key] - true_p_bar[key])
             tp_sorted.append(true_p_bar[key])
         plt.barh(range(n_classes), fp_sorted, align='center', color='crimson', label='False Positive')
-        plt.barh(range(n_classes), tp_sorted, align='center', color='forestgreen', label='True Positive',
-                 left=fp_sorted)
+        plt.barh(range(n_classes), tp_sorted, align='center', color='forestgreen',
+                 label='True Positive', left=fp_sorted)
         # add legend
         plt.legend(loc='lower right')
         """
@@ -228,8 +228,7 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
             tp_val = tp_sorted[i]
             fp_str_val = " " + str(fp_val)
             tp_str_val = fp_str_val + " " + str(tp_val)
-            # trick to paint multicolor with offset:
-            # first paint everything and then repaint the first number
+
             t = plt.text(val, i, tp_str_val, color='forestgreen', va='center', fontweight='bold')
             plt.text(val, i, fp_str_val, color='crimson', va='center', fontweight='bold')
             if i == (len(sorted_values) - 1):  # largest bar
@@ -239,20 +238,18 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
         """
          Write number on side of bar
         """
-        fig = plt.gcf()  # gcf - get current figure
+        fig = plt.gcf()
         axes = plt.gca()
         r = fig.canvas.get_renderer()
         for i, val in enumerate(sorted_values):
-            str_val = " " + str(val)  # add a space before
+            str_val = " " + str(val)
             if val < 1.0:
                 str_val = " {0:.2f}".format(val)
             t = plt.text(val, i, str_val, color=plot_color, va='center', fontweight='bold')
             # re-set axes to show number inside the figure
             if i == (len(sorted_values) - 1):  # largest bar
                 adjust_axes(r, t, fig, axes)
-    # set window title
     fig.canvas.set_window_title(window_title)
-    # write classes in y axis
     tick_font_size = 12
     plt.yticks(range(n_classes), sorted_keys, fontsize=tick_font_size)
     """
@@ -263,7 +260,7 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
     dpi = fig.dpi
     height_pt = n_classes * (tick_font_size * 1.4)  # 1.4 (some spacing)
     height_in = height_pt / dpi
-    # compute the required figure height 
+    # compute the required figure height
     top_margin = 0.15  # in percentage of the figure height
     bottom_margin = 0.05  # in percentage of the figure height
     figure_height = height_in / (1 - top_margin - bottom_margin)
@@ -271,19 +268,12 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
     if figure_height > init_height:
         fig.set_figheight(figure_height)
 
-    # set plot title
     plt.title(plot_title, fontsize=14)
-    # set axis titles
-    # plt.xlabel('classes')
     plt.xlabel(x_label, fontsize='large')
-    # adjust size of window
     fig.tight_layout()
-    # save the plot
     fig.savefig(output_path)
-    # show image
     if to_show:
         plt.show()
-    # close the plot
     plt.close()
 
 
@@ -558,8 +548,8 @@ def get_map(MINOVERLAP, draw_plot, path='./map_out'):
 
                     cv2.imshow("Animation", img)
                     cv2.waitKey(20)
-                    output_img_path = RESULTS_FILES_PATH + "/images/detections_one_by_one/" + class_name + \
-                        "_detection" + str(idx) + ".jpg"
+                    output_img_path = RESULTS_FILES_PATH + "/images/detections_one_by_one/" + \
+                                      class_name + "_detection" + str(idx) + ".jpg"
                     cv2.imwrite(output_img_path, img)
                     cv2.imwrite(img_cumulative_path, img_cumulative)
 
@@ -602,8 +592,8 @@ def get_map(MINOVERLAP, draw_plot, path='./map_out'):
             rounded_rec = ['%.2f' % elem for elem in rec]
             results_file.write(text + "\n Precision: " + str(rounded_prec) + "\n Recall :" + str(rounded_rec) + "\n\n")
             if len(prec) > 0:
-                print(text + "\t||\tscore_threhold=0.5 : " + "F1=" + "{0:.2f}".format(F1[score05_idx]) + \
-                      " ; Recall=" + "{0:.2f}%".format(rec[score05_idx] * 100) + " ; Precision=" + "{0:.2f}%".format(
+                print(text + "\t||\tscore_threhold=0.5 : " + "F1=" + "{0:.2f}".format(F1[score05_idx]) \
+                      + " ; Recall=" + "{0:.2f}%".format(rec[score05_idx] * 100) + " ; Precision=" + "{0:.2f}%".format(
                     prec[score05_idx] * 100))
             else:
                 print(text + "\t||\tscore_threhold=0.5 : F1=0.00% ; Recall=0.00% ; Precision=0.00%")
@@ -724,8 +714,8 @@ def get_map(MINOVERLAP, draw_plot, path='./map_out'):
         output_path = RESULTS_FILES_PATH + "/ground-truth-info.png"
         to_show = False
         plot_color = 'forestgreen'
-        draw_plot_func(gt_counter_per_class, n_classes, window_title, plot_title, x_label,
-                       output_path, to_show, plot_color, '')
+        draw_plot_func(gt_counter_per_class, n_classes, window_title, plot_title,
+                       x_label, output_path, to_show, plot_color, '', )
 
     """
     Draw log-average miss rate plot (Show lamr of all classes in decreasing order)
@@ -737,8 +727,8 @@ def get_map(MINOVERLAP, draw_plot, path='./map_out'):
         output_path = RESULTS_FILES_PATH + "/lamr.png"
         to_show = False
         plot_color = 'royalblue'
-        draw_plot_func(lamr_dictionary, n_classes, window_title, plot_title, x_label,
-                       output_path, to_show, plot_color, "")
+        draw_plot_func(lamr_dictionary, n_classes, window_title, plot_title,
+                       x_label, output_path, to_show, plot_color, "")
 
     """
     Draw mAP plot (Show AP's of all classes in decreasing order)
@@ -750,16 +740,15 @@ def get_map(MINOVERLAP, draw_plot, path='./map_out'):
         output_path = RESULTS_FILES_PATH + "/mAP.png"
         to_show = True
         plot_color = 'royalblue'
-        draw_plot_func(ap_dictionary, n_classes, window_title, plot_title, x_label,
-                       output_path, to_show, plot_color, "")
+        draw_plot_func(ap_dictionary, n_classes, window_title, plot_title,
+                       x_label, output_path, to_show, plot_color, "")
 
 
 def preprocess_gt(gt_path, class_names):
     image_ids = os.listdir(gt_path)
     results = {}
 
-    images = []
-    bboxes = []
+    images, bboxes = [], []
     for i, image_id in enumerate(image_ids):
         lines_list = file_lines_to_list(os.path.join(gt_path, image_id))
         boxes_per_image = []
@@ -805,8 +794,8 @@ def preprocess_gt(gt_path, class_names):
 
     annotations = []
     for i, box in enumerate(bboxes):
-        annotation = {'area': box[-1], 'category_id': box[-2], 'image_id': box[-3],
-                      'iscrowd': box[-4], 'bbox': box[:4], 'id': i}
+        annotation = {'area': box[-1], 'category_id': box[-2], 'image_id': box[-3], 'iscrowd': box[-4], 'bbox': box[:4],
+                      'id': i}
         annotations.append(annotation)
     results['annotations'] = annotations
     return results
@@ -830,33 +819,3 @@ def preprocess_dr(dr_path, class_names):
                       "bbox": [left, top, right - left, bottom - top], "score": float(confidence)}
             results.append(result)
     return results
-
-
-def get_coco_map(class_names, path):
-    from pycocotools.coco import COCO
-    from pycocotools.cocoeval import COCOeval
-
-    GT_PATH = os.path.join(path, 'ground-truth')
-    DR_PATH = os.path.join(path, 'detection-results')
-    COCO_PATH = os.path.join(path, 'coco_eval')
-
-    if not os.path.exists(COCO_PATH):
-        os.makedirs(COCO_PATH)
-
-    GT_JSON_PATH = os.path.join(COCO_PATH, 'instances_gt.json')
-    DR_JSON_PATH = os.path.join(COCO_PATH, 'instances_dr.json')
-
-    with open(GT_JSON_PATH, "w") as f:
-        results_gt = preprocess_gt(GT_PATH, class_names)
-        json.dump(results_gt, f, indent=4)
-
-    with open(DR_JSON_PATH, "w") as f:
-        results_dr = preprocess_dr(DR_PATH, class_names)
-        json.dump(results_dr, f, indent=4)
-
-    cocoGt = COCO(GT_JSON_PATH)
-    cocoDt = cocoGt.loadRes(DR_JSON_PATH)
-    cocoEval = COCOeval(cocoGt, cocoDt, 'bbox')
-    cocoEval.evaluate()
-    cocoEval.accumulate()
-    cocoEval.summarize()

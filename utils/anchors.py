@@ -28,29 +28,3 @@ def _enumerate_shifted_anchor(anchor_base, feat_stride, height, width):
     anchor = anchor.reshape((K * A, 4)).astype(np.float32)
     return anchor
 
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    nine_anchors = generate_anchor_base()
-    print(nine_anchors)
-
-    height, width, feat_stride = 38, 38, 16
-    anchors_all = _enumerate_shifted_anchor(nine_anchors, feat_stride, height, width)
-    print(np.shape(anchors_all))
-    
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    plt.ylim(-300, 900)
-    plt.xlim(-300, 900)
-    shift_x = np.arange(0, width * feat_stride, feat_stride)
-    shift_y = np.arange(0, height * feat_stride, feat_stride)
-    shift_x, shift_y = np.meshgrid(shift_x, shift_y)
-    plt.scatter(shift_x, shift_y)
-    box_widths = anchors_all[:, 2]-anchors_all[:, 0]
-    box_heights = anchors_all[:, 3]-anchors_all[:, 1]
-    
-    for i in [108, 109, 110, 111, 112, 113, 114, 115, 116]:
-        rect = plt.Rectangle([anchors_all[i, 0], anchors_all[i, 1]],
-                             box_widths[i], box_heights[i], color="r", fill=False)
-        ax.add_patch(rect)
-    plt.show()
