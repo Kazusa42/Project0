@@ -6,33 +6,42 @@ from utils.utils import get_classes
 from configure import *
 
 """
-0: the whole process
-   including get txt file in dataset/ImageSets and train.txt、val.txt for training
-   
-1: only get txt file in dataset/ImageSets
+Params descriptions
 
-2: only get train.txt、val.txt for training
+annotation_mode:
+    0: the whole process
+       including get txt file in dataset/ImageSets and train.txt、val.txt for training
+    1: only get txt file in dataset/ImageSets
+    2: only get train.txt、val.txt for training
+
+trainval_percent:
+    the rate of (training set + validation set) : test set
+
+train_percent:
+    the rate of training set : validation set
+
+classes_path and dataset_path:
+    Set to the same path when trainging.
+    classes should BE PAIRED with dataset
+
+ignored_difficulty:
+    some objects in the dataset is labeled as "difficult to detected".
+    1. True: code will register all objects' information.
+    2. False: code will only register those "non-difficult" objects' information. 
 """
+
 annotation_mode = 0
-
-""" set to the same value when training and predict"""
-classes_path = CLASSES_PATH
-
-"""
-trainval_percent: the rate of (training set + validation set) : test set
-train_percent: the rate of training set : validation set
-"""
-trainval_percent = 0.9
+trainval_percent = 1.0
 train_percent = 0.9
-
+classes_path = CLASSES_PATH
 dataset_path = DATASET_PATH
-
-VOCdevkit_sets = ['train', 'val']
+divided_type = ['train', 'val']
 classes, _ = get_classes(classes_path)
+ignored_difficulty = True
 
 
-def convert_annotation(image_id, list_file):
-    in_file = open(os.path.join(dataset_path, 'Annotations/%s.xml' % image_id), encoding='utf-8')
+def convert_annotation(image_name, list_files):
+    in_file = open(os.path.join(dataset_path, 'Annotations/%s.xml' % image_name), encoding='utf-8')
     tree = ET.parse(in_file)
     root = tree.getroot()
 
@@ -41,13 +50,15 @@ def convert_annotation(image_id, list_file):
         if obj.find('difficult') is not None:
             difficult = obj.find('difficult').text
         cls = obj.find('name').text
-        if cls not in classes or int(difficult) == 1:
-            continue
+        if not ignored_difficulty:
+            if cls not in classes or int(difficult) == 1:
+                continue
+
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
         b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)),
              int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))
-        list_file.write(" " + ",".join([str(a) for a in b]) + ',' + str(cls_id))
+        list_files.write(" " + ",".join([str(a) for a in b]) + ',' + str(cls_id))
 
 
 if __name__ == "__main__":
@@ -94,7 +105,7 @@ if __name__ == "__main__":
 
     if annotation_mode == 0 or annotation_mode == 2:
         print("Generate train.txt and val.txt for train.")
-        for image_set in VOCdevkit_sets:
+        for image_set in divided_type:
             image_ids = open(os.path.join(dataset_path, 'ImageSets/Main/%s.txt' % image_set),
                              encoding='utf-8').read().strip().split()
             list_file = open('%s.txt' % image_set, 'w', encoding='utf-8')

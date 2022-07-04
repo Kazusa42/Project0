@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from frcnn import FRCNN
 from utils.utils import get_classes
-from utils.utils_map import get_coco_map, get_map
+from utils.utils_map import get_map
 from configure import *
 
 if __name__ == "__main__":
@@ -24,13 +24,12 @@ if __name__ == "__main__":
     classes_path: normally just set it as the same path when training or predict
     MINOVERLAP: iou, the mAP will be calculated under this iou
     map_vis: visualization or not
-    VOCdevkit_path:
     map_out_path: mAP output file path 
     """
     classes_path = CLASSES_PATH
+    dataset_path = DATASET_PATH
     MINOVERLAP = 0.5
     map_vis = False
-    dataset_path = 'VOCdevkit'
     map_out_path = 'map_out'
 
     image_ids = open(os.path.join(dataset_path, "ImageSets/Main/test.txt")).read().strip().split()
@@ -59,11 +58,11 @@ if __name__ == "__main__":
                 image.save(os.path.join(map_out_path, "images-optional/" + image_id + ".jpg"))
             frcnn.get_map_txt(image_id, image, class_names, map_out_path)
         print("Get predict result done.")
-        
+
     if map_mode == 0 or map_mode == 2:
         print("Get ground truth result.")
         for image_id in tqdm(image_ids):
-            with open(os.path.join(map_out_path, "ground-truth/"+image_id+".txt"), "w") as new_f:
+            with open(os.path.join(map_out_path, "ground-truth/" + image_id + ".txt"), "w") as new_f:
                 root = ET.parse(os.path.join(dataset_path, "Annotations/" + image_id + ".xml")).getroot()
                 for obj in root.findall('object'):
                     difficult_flag = False
@@ -90,4 +89,5 @@ if __name__ == "__main__":
         print("Get map.")
         get_map(MINOVERLAP, True, path=map_out_path)
         print("Get map done.")
+
 
