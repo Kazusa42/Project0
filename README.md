@@ -1,54 +1,7 @@
 # Project0
-Codes for Thesis
 
-## Versions
-### Ver 0.1  update on 2022/02/10
-1. Complete the code for Faster R-CNN (paper: https://arxiv.org/pdf/1506.01497v3.pdf)
-2. predict.py had been tested, as well as train.py.
-3. Creat the first version of README.
+An implementation of Faster R-CNN.
 
-### Ver 0.2  update on 2022/03/10
-1. get_map.py has been tested and get 73.87% mAP on VOC, 8.13% mAP on VisDrone.
-2. Simplify some code
-3. Add a configure.py to control some global params. However, please notice this script is not in full-charge.
+In order to test the performance get by `AttentionNeck`
 
-### Ver 1.0 update on 2022/03/13
-1. Add D-IOU (https://zhuanlan.zhihu.com/p/94799295) function to replace normal IOU, and train with D-IOU.
-2. Get 13.83% mAP on VisDrone.
-3. Change weights file saving strategy. (saving for each epoch -> saving for every 10 epoch)
-4. Re-write some part of README.
-
-### Ver 1.1 update on 2022/03/20
-1. Use DOTA dataset to train. 
-
-## Code structure
-1. folder "net" contain the whole network structure of Faster R-CNN (net/frcnn.py).
-2. folder "utils" including some support block.
-3. class "FRCNN" in frcnn.py is for detection. Its' net comes from "net/frcnn.py".
-
-
-## Training
-__This code use the same annotation format as VOC dataset to train.__
-1. Prepare your dataset.  
-   Put the images under dir "./your_dataset_name/JPEGImages"  
-   Put labels under dir "./your_dataset_name/Annotation"
-2. Creat a your_classes.txt file for your dataset and put it under dir "./model_data".
-3. Change "classes_path" param in annotation.py, let it corresponse to "./model_data/your_classes.txt"
-4. Run annotation.py
-5. Change "classes_path" etc. parmas in configure.py and run train.py.
-6. _More details about training is written in train.py_
-
-## Detection
-### 1. use pretrained weight
-1. Put weight file (.pth) under dir "./model_data". Then run predict.py and input the image path.
-### 2. use your own weight
-1. First follow the [Training](#Training) part to get your own weight.
-2. Then change _"model_path" and "classes_path"_ these 2 attributes of "_defaults_" param in "frcnn.py", let them corresponce to your dataset.
-3. Then run predict.py and input the image path.
-4. _Other settings about predict is wirtten in predict.py._
-
-## Evaluate
-1. Set your modle (weights file) and classes in configure.py.  
-2. Make sure you have already got "test.txt" under dir "./your_dataset_name/ImageSets".  
-3. To asure 2, set params in configure.py and run annotation.py.  
-4. Run get_map.py.  
+More detailes about `AttentionNeck` please refer to (Project1)[https://github.com/Kazusa42/Project1]
