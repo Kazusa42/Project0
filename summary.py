@@ -23,8 +23,13 @@ print('----------------------------')
 print(type(test.downsample_layers[0]))
 
 model = FasterRCNN(15, anchor_scales=[4, 16, 32], backbone='convnext_tiny',
-                   pretrained=False, transneck=True)
+                   pretrained=False, attentionneck=True)
 
 img = torch.rand([1, 3, 640, 640])
-flops1, params1 = profile(model1, inputs=(img, ))
-print('model1 Params = ' + str(params1 / 1000 ** 2) + 'M')
+
+"""x1 = model1.forward(img)
+print(x1.shape)
+
+x2 = tmp1.forward(img)
+print(x2.shape)"""
+model.forward(img)
