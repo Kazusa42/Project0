@@ -12,9 +12,9 @@ from PIL import Image
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-from .utils import cvtColor, resize_image, preprocess_input, get_new_img_size
-from .utils_bbox import DecodeBox
-from .utils_map import get_map
+from utils import cvtColor, resize_image, preprocess_input, get_new_img_size
+from utils_bbox import DecodeBox
+from utils_map import get_map
 
 matplotlib.use('Agg')
 
