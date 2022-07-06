@@ -17,8 +17,8 @@ class RoIHead(nn.Module):
             self.cls_loc = nn.Linear(2048, n_class * 4)
             self.score = nn.Linear(2048, n_class)
         elif backbone == r'convnext_tiny':
-            self.cls_loc = nn.Linear(150528, n_class * 4)
-            self.score = nn.Linear(150528, n_class)
+            self.cls_loc = nn.Linear(3072, n_class * 4)
+            self.score = nn.Linear(3072, n_class)
 
         normal_init(self.cls_loc, 0, 0.001)
         normal_init(self.score, 0, 0.01)

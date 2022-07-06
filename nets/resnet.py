@@ -1,7 +1,6 @@
 import math
 
 import torch.nn as nn
-from torch.hub import load_state_dict_from_url
 
 
 class Bottleneck(nn.Module):

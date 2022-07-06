@@ -22,7 +22,6 @@ def resnet50(pretrained=False):
 
 model_urls = {
     "convnext_tiny_1k": "https://dl.fbaipublicfiles.com/convnext/convnext_tiny_1k_224_ema.pth",
-    "convnext_small_1k": "https://dl.fbaipublicfiles.com/convnext/convnext_small_1k_224_ema.pth",
 }
 
 
@@ -36,18 +35,9 @@ def convnext_tiny(trans_neck=True, pretrained=False, in_22k=False, **kwargs):
 
     features = list([model.downsample_layers[0], model.stages[0], model.downsample_layers[1], model.stages[1],
                      model.downsample_layers[2], model.stages[2], model.downsample_layers[3], model.stages[3]])
-    classifier = list([])
+    classifier = list([nn.AvgPool2d(7)])
 
     features = nn.Sequential(*features)
     classifier = nn.Sequential(*classifier)
     return features, classifier
-
-
-def convnext_small(trans_neck=True, pretrained=False, in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[96, 192, 384, 768], transneck=trans_neck, **kwargs)
-    if pretrained:
-        url = model_urls['convnext_small_22k'] if in_22k else model_urls['convnext_small_1k']
-        checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
-        model.load_state_dict(checkpoint["model"], strict=False)
-    return model
 
