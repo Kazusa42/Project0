@@ -19,7 +19,8 @@ def get_random_data(annotation_line, input_shape, jitter=.3, hue=.1, sat=0.7, va
     h, w = input_shape
 
     box = np.array([np.array(list(map(int, box.split(',')))) for box in line[1:]])
-
+    flip = rand() < .5
+    
     if not random:
         scale = min(w / iw, h / ih)
         nw = int(iw * scale)
@@ -50,7 +51,6 @@ def get_random_data(annotation_line, input_shape, jitter=.3, hue=.1, sat=0.7, va
         new_image.paste(image, (dx, dy))
         image = new_image
 
-        flip = rand() < .5
         if flip:
             image = image.transpose(Image.FLIP_LEFT_RIGHT)
 
