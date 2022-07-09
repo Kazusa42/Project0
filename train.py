@@ -47,8 +47,8 @@ if __name__ == "__main__":
     save_period = 1
     save_dir = 'logs'
 
-    eval_flag = True
-    eval_period = 1
+    eval_flag = EVAL_FLAG
+    eval_period = EVAL_PERIOD
 
     num_workers = 4
     train_annotation_path = 'train.txt'
