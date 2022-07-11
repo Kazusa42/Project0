@@ -39,7 +39,6 @@ LR_DECAY_TYPE = r'cos'
 EVAL_FLAG = False
 EVAL_PERIOD = UNFREEZE_EPOCH
 
-
 """ Others """
 FONT_TYPE = r'model_data/font_style_1.ttf'
 
